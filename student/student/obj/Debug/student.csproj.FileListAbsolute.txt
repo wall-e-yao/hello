@@ -1,0 +1,15 @@
+C:\Users\yaohao\Desktop\大学--\sql\student\student\bin\Debug\student.exe
+C:\Users\yaohao\Desktop\大学--\sql\student\student\bin\Debug\student.pdb
+C:\Users\yaohao\Desktop\大学--\sql\student\student\obj\Debug\student.csprojAssemblyReference.cache
+C:\Users\yaohao\Desktop\大学--\sql\student\student\obj\Debug\student.Form1.resources
+C:\Users\yaohao\Desktop\大学--\sql\student\student\obj\Debug\student.Properties.Resources.resources
+C:\Users\yaohao\Desktop\大学--\sql\student\student\obj\Debug\student.csproj.GenerateResource.cache
+C:\Users\yaohao\Desktop\大学--\sql\student\student\obj\Debug\student.csproj.CoreCompileInputs.cache
+C:\Users\yaohao\Desktop\大学--\sql\student\student\obj\Debug\student.exe
+C:\Users\yaohao\Desktop\大学--\sql\student\student\obj\Debug\student.pdb
+C:\Users\yaohao\Desktop\大学--\sql\student\student\obj\Debug\student.stu.resources
+C:\Users\yaohao\Desktop\大学--\sql\student\student\obj\Debug\student.teacher.resources
+C:\Users\yaohao\Desktop\大学--\sql\student\student\obj\Debug\student.admin.resources
+C:\Users\yaohao\Desktop\大学--\sql\student\student\obj\Debug\student.AddStudent.resources
+C:\Users\yaohao\Desktop\大学--\sql\student\student\obj\Debug\student.update.resources
+C:\Users\yaohao\Desktop\大学--\sql\student\student\obj\Debug\student.fudaoyuan.resources
