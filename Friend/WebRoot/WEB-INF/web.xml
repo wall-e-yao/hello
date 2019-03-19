@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+  <servlet>
+    <servlet-name>Login</servlet-name>
+    <servlet-class>controller.Login</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>Register</servlet-name>
+    <servlet-class>controller.Register</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>QueryAllFriend</servlet-name>
+    <servlet-class>controller.QueryAllFriend</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>QueryByName</servlet-name>
+    <servlet-class>controller.QueryByName</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>DeleteFriends</servlet-name>
+    <servlet-class>controller.DeleteFriends</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>UpdateFriend</servlet-name>
+    <servlet-class>controller.UpdateFriend</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>getOneInfo</servlet-name>
+    <servlet-class>controller.getOneInfo</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>Addfriend</servlet-name>
+    <servlet-class>controller.Addfriend</servlet-class>
+  </servlet>
+
+
+
+
+
+
+
+
+  <servlet-mapping>
+    <servlet-name>Login</servlet-name>
+    <url-pattern>/Login</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>Register</servlet-name>
+    <url-pattern>/Register</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>QueryAllFriend</servlet-name>
+    <url-pattern>/QueryAllFriend</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>QueryByName</servlet-name>
+    <url-pattern>/QueryByName</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>DeleteFriends</servlet-name>
+    <url-pattern>/DeleteFriends</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>UpdateFriend</servlet-name>
+    <url-pattern>/UpdateFriend</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>getOneInfo</servlet-name>
+    <url-pattern>/getOneInfo</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>Addfriend</servlet-name>
+    <url-pattern>/Addfriend</url-pattern>
+  </servlet-mapping>
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+</web-app>
