@@ -1,0 +1,17 @@
+# depslib dependency file v1.0
+1497504495 source:c:\users\yaohao\desktop\实验\2048bc\源代码.c
+	<stdio.h>
+	<time.h>
+	<stdlib.h>
+	<conio.h>
+	<string.h>
+	<windows.h>
+
+1497504495 source:c:\users\yaohao\desktop\数据结构实验\2048\2048cb\源代码.c
+	<stdio.h>
+	<time.h>
+	<stdlib.h>
+	<conio.h>
+	<string.h>
+	<windows.h>
+
