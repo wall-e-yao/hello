@@ -1,0 +1,10 @@
+C:\Users\yaohao\Desktop\C#实验\newword\newword\bin\Debug\newword.exe.config
+C:\Users\yaohao\Desktop\C#实验\newword\newword\bin\Debug\newword.exe
+C:\Users\yaohao\Desktop\C#实验\newword\newword\bin\Debug\newword.pdb
+C:\Users\yaohao\Desktop\C#实验\newword\newword\obj\Debug\newword.csprojAssemblyReference.cache
+C:\Users\yaohao\Desktop\C#实验\newword\newword\obj\Debug\newword.Form1.resources
+C:\Users\yaohao\Desktop\C#实验\newword\newword\obj\Debug\newword.Properties.Resources.resources
+C:\Users\yaohao\Desktop\C#实验\newword\newword\obj\Debug\newword.csproj.GenerateResource.cache
+C:\Users\yaohao\Desktop\C#实验\newword\newword\obj\Debug\newword.csproj.CoreCompileInputs.cache
+C:\Users\yaohao\Desktop\C#实验\newword\newword\obj\Debug\newword.exe
+C:\Users\yaohao\Desktop\C#实验\newword\newword\obj\Debug\newword.pdb
