@@ -1,2 +1,1 @@
-# hello
-this is the first test!
+这是一个写字板项目，采用C#语言模仿了一下微软的office中的word的部分功能。
