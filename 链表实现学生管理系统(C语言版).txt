@@ -1,0 +1,190 @@
+#include<stdio.h>
+#include<stdlib.h>
+#define M 5                 
+struct student
+{
+	int num;
+	char name[15];
+	double score[M];
+	double total;
+};
+struct node
+{
+	struct student data;
+	struct node* next;
+};
+typedef struct node* link;
+link createnode()               
+{
+	link p,q,head = NULL;
+	int i;
+    q =	p = (link)malloc(sizeof(struct node));      
+    head = p;
+    p->data.total = 0;
+	scanf("%d%s",&p->data.num,p->data.name);
+	for(i = 0;i < M; i++)
+	{
+		scanf("%lf",&p->data.score[i]);
+		p->data.total += p->data.score[i];
+	}
+	while(p->data.num != 0)   
+	{
+       q->next = p;
+	   q = p;
+	   p = (link)malloc(sizeof(struct node));
+       p->data.total = 0;
+	   scanf("%d%s",&p->data.num,p->data.name);
+	for(i = 0;i < M; i++)
+	{
+		scanf("%lf",&p->data.score[i]);
+		p->data.total += p->data.score[i];
+	}
+	}
+	q->next = NULL;               
+	return head;
+}
+void putnode(link head)   
+{
+	int i;
+	link p;
+	p = head;
+	while(p != NULL)
+	{
+      printf("%d %s ",p->data.num,p->data.name);
+	for(i = 0;i < M; i++)
+	{
+		printf(" %.2lf",p->data.score[i]);
+	}
+	printf(" %.2lf\n",p->data.total);
+      p = p->next;
+	}
+      return ;
+}
+link deletenode(link head,int num1)
+{
+	link p,q;
+     p = head;
+	 if(!head)
+	 {
+		 printf(" NULL \n");
+		 return head;
+	 }
+	 while(p->data.num != num1&&p)       
+	 {
+         q = p;
+		 p = p->next;
+	 }
+	 if(p==head)          
+	 {
+		 head=p->next;
+	     return head;
+	 }
+	 if(p->next==NULL)         
+		 q->next=NULL;
+	 else
+	 q->next = q->next->next;
+     return head;
+	 free(p);                   
+}
+link insertsort(link head)
+{
+	link p,q,t,first;    
+	first = head->next;          
+	head->next=NULL;               
+     while(first != NULL)
+	 {
+		t = first;                 //  保存first
+		for(q = head;(q != NULL)&&(q->data.total > t->data.total);p = q,q = q->next);
+		first = first->next;
+		if(q == head)
+		{
+		    t->next = head;        
+		    head = t;
+		}
+
+		else
+		{
+		    t->next = q;
+		    p->next = t;
+		}
+	 }
+	return head;
+}
+link insert(link head)
+{
+	int i,n;
+	link t,s,q;
+	head = insertsort(head);         
+	printf("请输入插入的人数：\n");
+	scanf("%d",&n);
+	while(n--)
+	{
+	    t = (link)malloc(sizeof(struct node));
+	 t->data.total = 0;
+	scanf("%d%s",&t->data.num,t->data.name);
+	for(i = 0;i < M; i++)
+	{
+		scanf("%lf",&t->data.score[i]);
+		t->data.total += t->data.score[i];
+	}
+     for(q = head;(q != NULL)&&(q->data.total > t->data.total);s = q,q = q->next); 
+     if(q == head)
+     {
+         t->next = head;
+         head = t;
+     }
+     else
+     {
+        t->next = q;
+        s->next = t;
+     }
+	}
+
+		return head;
+}
+void menu(link head)
+{
+    int flag = 1,n,m;
+    while(flag)
+    {
+        printf("1-------------------------输入\n");
+        printf("2-------------------------输出\n");
+        printf("3-------------------------删除\n");
+        printf("4-------------------------排序\n");
+        printf("5-------------------------插入\n");
+        printf("0-------------------------退出\n");
+        scanf("%d",&n);
+        system("cls");
+        switch(n)
+        {
+            case 1:head = createnode();break;
+            case 2:putnode(head);break;
+            case 3:{
+               printf("请输入需要删除的学生的学号\n");
+               scanf("%d",&m);
+               head = deletenode(head,m);
+            };break;
+            case 4:head = insertsort(head);break;
+            case 5:head = insert(head);break;
+            case 0:exit(0);
+        }
+
+    }
+}
+int main()
+{
+	link head,h;
+    menu(head);
+	return 0;
+}
+
+
+
+/****************************
+20166500 fhsh 88 90 95 98 97
+20166501 agrg 99 97 98 96 95
+20166502 adfq 99 99 99 99 99
+20166503 wqwe 56 67 59 61 63
+0 0 0 0 0 0 0
+20166504 luik 78 87 89 88 90 
+*****************************/

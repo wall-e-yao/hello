@@ -1,0 +1,1088 @@
+
+/***********************************************************************
+*
+*
+*                  项目名称：银行卡管理系统
+*                  项目功能：实现银行卡的基本功能
+*                   环境 ：VC++ win7
+*                  
+*                 <在校>      最后修改<2017.03.16>      修改人<姚浩>  
+*
+************************************************************************/
+#include<stdio.h>
+#include<stdlib.h>
+#include<conio.h>
+#include<time.h>                              // 交易记录时间
+#include<string.h>
+#include<windows.h>
+#define M 10
+#define NN 20
+#define Max_PD 13                            //最大的密码长度
+struct report                                //  交易记录
+{
+	char time[50];
+	char s[6];                               // 类型
+	double _money;
+};
+struct bankcard
+{
+	char name[17];                           //    16number
+	char password[13];                       //    8-12 number&&ABC
+	double balance;                          //    余额
+	short int flag1;                         //    0 salf，1 挂失， 2 销卡
+	struct report  jiaoyi[NN];
+	short int t;
+};
+typedef struct node * link;
+void Interface();
+void gotoxy(int x, int y);
+void Enterface();
+void Menu1();
+void Menu2(int i);
+void Menu3();
+void Registerface();
+void Register();
+void Enter();                               //    n   控制登录次数
+void Administrat();
+void Layout();
+void Layout2();
+void Saving(int i);
+void Withdraw(int i);
+void TransferMoney(int i);
+void Remaining(int i);
+void Loss(int i);
+void Delete(int i);
+void Unfreeze(int i);
+void Remember(int i);
+void Changemima(int i);
+int Number(char *p);
+char* Nowtime();
+
+int main()
+{
+	Menu1();
+	return 0;
+}
+
+char* Nowtime()              //   何时发生
+{
+	char p[50];
+	char h[5];
+	time_t now = time(NULL);
+	// printf("now : %d \n",(int)now );
+	tm into = *localtime(&now);                //从1970-01-01 00:00:00:
+	int year = into.tm_year + 1900;
+	int mouth = into.tm_mon + 1;
+	int day = into.tm_mday;
+	int hour = into.tm_hour;
+	int fen = into.tm_min;
+	int sec = into.tm_sec;
+	itoa(year, p, 10);
+	strcpy(h, "年");
+	strcat(p, h);
+	itoa(mouth, h, 10);
+	strcat(p, h);
+	strcpy(h, "月");
+	strcat(p, h);
+	itoa(day, h, 10);
+	strcat(p, h);
+	strcpy(h, "日");
+	strcat(p, h);
+	itoa(hour, h, 10);
+	strcat(p, h);
+	strcpy(h, "时");
+	strcat(p, h);
+	itoa(fen, h, 10);
+	strcat(p, h);
+	strcpy(h, "分");
+	strcat(p, h);
+	itoa(sec, h, 10);
+	strcat(p, h);
+	strcpy(h, "秒");
+	strcat(p, h);
+	//printf("%d年%d月%d日 %d时%d分%d秒\n", year, mouth, day, hour, fen, sec);
+	return p;
+}
+
+int Number(char *p)           //某账号在数组中的位置
+{
+	FILE *fp;
+	int k = 0;
+	struct bankcard s[M];
+	fp = fopen("D:/a/银行用户信息.txt", "r");
+	if (fp == NULL)
+	{
+		printf("Failed to open the file!\n");
+		return -1;
+	}
+	fread(&s[k], sizeof(struct bankcard), 1, fp);
+	while (!feof(fp))
+	{
+
+		k++;
+		fread(&s[k], sizeof(struct bankcard), 1, fp);
+	}
+	fclose(fp);
+	for (int i = 0; i < k; i++)
+	{
+		if (strcmp(p, s[i].name) == 0)
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+
+void Enter()
+{
+	FILE *fp;
+	int i = 0, n = 3;
+	char s[17], p[13] = "\0", ch;
+	struct bankcard card[M];
+	system("cls");
+	Enterface();
+	gotoxy(40, 3);
+	scanf("%s", s);
+	ch = getchar();
+	while (n--)
+	{
+		gotoxy(40, 5);
+		while ((ch = getch()) != '\r')
+		{
+			if (ch != '\b')
+			{
+				p[i] = ch;
+				i++;
+				printf("*");
+			}
+			else if (i > 0 && ch == '\b')
+			{
+				--i;
+				putchar('\b');
+				putchar(' ');
+				putchar('\b');
+			}
+		}
+		fp = fopen("d:/a/银行用户信息.txt", "rb");
+		if (fp == NULL)
+		{
+			printf("Failed to open the file!!!\n");
+			return;
+		}
+		i = 0;
+		fread(&card[i], sizeof(struct bankcard), 1, fp);
+		while (!feof(fp))
+		{
+			if ((strcmp(card[i].name, s) == 0) && (strcmp(card[i].password, p) == 0))
+			{
+				fclose(fp);
+				if (card[i].flag1 == 1)
+				{
+					system("cls");
+					printf("此卡已经被挂失！！\n");
+					system("pause");
+					//Unfreeze(i);
+					exit(0);
+				}
+				else
+					Menu2(i);
+			}
+			i++;
+			fread(&card[i], sizeof(struct bankcard), 1, fp);
+		}
+		gotoxy(10, 20);
+		printf("用户名或密码错误！！你还有%d次机会\n\n", n);
+		if (n == 0)
+			exit(0);
+		system("pause");
+		system("cls");
+		Enterface();
+		gotoxy(40, 3);
+		printf("%s", s);
+		fclose(fp);
+	}
+	return;
+}
+
+void Administrat()
+{
+	int i = 0, n = 3;
+	char ch;
+	char s[17], p[13] = "\0";
+	system("cls");
+	Enterface();
+	gotoxy(40, 3);
+	scanf("%s", s);
+	ch = getchar();
+	while (n--)
+	{
+		gotoxy(40, 5);
+		while ((ch = getch()) != '\r')
+		{
+			if (ch != '\b')
+			{
+				p[i] = ch;
+				i++;
+				printf("*");
+			}
+			else if (i > 0 && ch == '\b')
+			{
+				--i;
+				putchar('\b');
+				putchar(' ');
+				putchar('\b');
+			}
+		}
+
+		if ((strcmp(s, "0000123456780000") == 0) && (strcmp(p, "yh1234..") == 0))
+			Menu3();
+
+		gotoxy(10, 20);
+		printf("用户名或密码错误！！你还有%d次机会\n\n", n);
+		if (n == 0)
+			exit(0);
+		system("pause");
+		system("cls");
+		Enterface();
+		gotoxy(40, 3);
+		printf("%s", s);
+	}
+	return;
+}
+
+void  Remaining(int i)                    //余额
+{
+	FILE *fp;
+	int k = 0;
+	struct bankcard card[M];
+	fp = fopen("D:/a/银行用户信息.txt", "r");
+	if (fp == NULL)
+	{
+		printf("Failed to open the file!\n");
+		system("pause");
+		return;
+	}
+	fread(&card[k], sizeof(struct bankcard), 1, fp);
+	while (!feof(fp))
+	{
+		k++;
+		fread(&card[k], sizeof(struct bankcard), 1, fp);
+	}
+	      	if (card[i].flag1 == 1)
+		{
+			printf("此卡已经被挂失！！系统不允许进行操作！\n");
+			system("pause");
+			return;
+		}
+	fread(&card[i], sizeof(struct bankcard), 1, fp);
+	printf("银行卡余额：%.2lf \n\n", card[i].balance);
+	system("pause");
+	fclose(fp);
+}
+
+void Saving(int i)                     // 存款
+{
+	int k = 0, j;
+	double money;
+	FILE *fp;
+	struct bankcard card[M];
+	fp = fopen("D:/a/银行用户信息.txt", "r");
+	if (fp == NULL)
+	{
+		printf("Failed to open the file!\n");
+		return;
+	}
+	fread(&card[k], sizeof(struct bankcard), 1, fp);
+	while (!feof(fp))
+	{
+
+		k++;
+		fread(&card[k], sizeof(struct bankcard), 1, fp);
+	}
+	fclose(fp);
+		if (card[i].flag1 == 1)
+		{
+			printf("此卡已经被挂失！！系统不允许进行金额交易！\n");
+			system("pause");
+			return;
+		}
+	printf("请输入存款金额：\n");
+	scanf("%lf", &money);
+	card[i].balance += money;
+	fp = fopen("D:/a/银行用户信息.txt", "w");
+	if (fp == NULL)
+	{
+		printf("Failed to open the file!\n");
+		return;
+	}
+	card[i].jiaoyi[card[i].t]._money = money;
+	strcpy(card[i].jiaoyi[card[i].t].time, Nowtime());
+	strcpy(card[i].jiaoyi[card[i].t].s, "存款");
+	card[i].t += 1;
+	for (j = 0; j < k; j++)
+		fwrite(&card[j], sizeof(struct bankcard), 1, fp);
+	fclose(fp);
+	printf("本次成功存入%.2lf元人民币。\n", money);
+	system("pause");
+}
+
+void Withdraw(int i)                       // 取款
+{
+	double money;
+	int k = 0, j;
+	FILE *fp;
+	char ch;
+	struct bankcard card[M];
+	fp = fopen("D:/a/银行用户信息.txt", "r");
+	if (fp == NULL)
+	{
+		printf("Failed to open the file!\n");
+		return;
+	}
+	fread(&card[k], sizeof(struct bankcard), 1, fp);
+	while (!feof(fp))
+	{
+		k++;
+		fread(&card[k], sizeof(struct bankcard), 1, fp);
+	}
+	fclose(fp);
+	if (card[i].flag1 == 1)
+		{
+			printf("此卡已经被挂失！！系统不允许进行金额交易！\n");
+			system("pause");
+			return;
+		}
+	printf("请输入取款金额：\n");
+	scanf("%lf", &money);
+	if (money <= card[i].balance)
+	{
+		card[i].balance -= money;
+		ch = getchar();
+	}
+	else
+	{
+		printf("你的银行卡金额不足!!!\n");
+		system("pause");
+		return;
+	}
+
+	fp = fopen("D:/a/银行用户信息.txt", "w");
+	if (fp == NULL)
+	{
+		printf("Failed to open the file!\n");
+		return;
+	}
+	card[i].jiaoyi[card[i].t]._money = money;
+	strcpy(card[i].jiaoyi[card[i].t].time, Nowtime());
+	strcpy(card[i].jiaoyi[card[i].t].s, "取款");
+	card[i].t += 1;
+	for (j = 0; j < k; j++)
+		fwrite(&card[j], sizeof(struct bankcard), 1, fp);
+	fclose(fp);
+	printf("本次成功取出%.2lf元人民币。\n", money);
+	system("pause");
+
+}
+
+void TransferMoney(int i)
+{
+	char zhanghao[17];
+	int z;                      // 转入账号在数组中的位置
+	int k = 0, j;
+	double money;
+	struct bankcard card[M];
+	FILE *fp;
+	printf("请输入转账账号：\n");
+	scanf("%s", zhanghao);
+	z = Number(zhanghao);
+	if (z == -1)
+	{
+		printf("没有发现该用户，请输入正确账号：\n");
+		system("pause");
+		return;
+	}
+	else
+	{
+
+		fp = fopen("D:/a/银行用户信息.txt", "r");
+		if (fp == NULL)
+		{
+			printf("Failed to open the file!\n");
+			system("pause");
+			return;
+		}
+		fread(&card[k], sizeof(struct bankcard), 1, fp);
+		while (!feof(fp))
+		{
+			k++;
+			fread(&card[k], sizeof(struct bankcard), 1, fp);
+		}
+		fclose(fp);
+			if (card[i].flag1 == 1)
+		{
+			printf("您的卡已经被挂失！！系统不允许进行金额交易！\n");
+			system("pause");
+			return;
+		}
+		if (card[z].flag1 == 1)
+		{
+			printf("此卡已经被挂失！！系统不允许进行金额交易！\n");
+			system("pause");
+			return;
+		}
+		if (card[z].flag1 == 2)
+		{
+			printf("此卡已经被销户！！\n");
+			system("pause");
+			return;
+
+		}
+		printf("请输入转账金额：\n");
+		scanf("%lf", &money);
+		if (money <= card[i].balance)
+		{
+			printf("转账成功\n");
+			card[i].balance -= money;
+			card[z].balance += money;
+			fp = fopen("D:/a/银行用户信息.txt", "w");
+			if (fp == NULL)
+			{
+				printf("Failed to open the file!\n");
+				return;
+			}
+			card[i].jiaoyi[card[i].t]._money = money;
+			strcpy(card[i].jiaoyi[card[i].t].time, Nowtime());
+			strcpy(card[i].jiaoyi[card[i].t].s, "转出");
+
+			strcpy(card[z].jiaoyi[card[z].t].time, Nowtime());
+			strcpy(card[z].jiaoyi[card[z].t].s, "转入");
+			card[z].jiaoyi[card[z].t]._money = money;
+			card[i].t += 1;
+			card[z].t += 1;
+			for (j = 0; j < k; j++)
+				fwrite(&card[j], sizeof(struct bankcard), 1, fp);
+			fclose(fp);
+			printf("本次操作成功转账%.2lf元人民币。\n", money);
+			system("pause");
+		}
+		else
+		{
+			printf("对不起，您的余额不足!!!\n");
+		}
+		return;
+	}
+
+
+}
+
+void Loss(int i)
+{
+	char ch;
+	struct bankcard card[M];
+	FILE *fp;
+	int k = 0, j;
+      	if (card[i].flag1 == 1)
+		{
+			printf("此卡已经被挂失！！系统不允许进行操作！\n");
+			system("pause");
+			return;
+		}
+	printf("你确定挂失此卡？确定请输入y,退出请输入n。\n");
+	ch = getchar();
+	ch = getchar();
+	if (ch == 'y')
+	{
+		fp = fopen("D:/a/银行用户信息.txt", "r");
+		if (fp == NULL)
+		{
+			printf("Failed to open the file!\n");
+			return;
+		}
+		fread(&card[k], sizeof(struct bankcard), 1, fp);
+		while (!feof(fp))
+		{
+
+			k++;
+			fread(&card[k], sizeof(struct bankcard), 1, fp);
+		}
+		fclose(fp);
+		card[i].flag1 = 1;
+		fp = fopen("D:/a/银行用户信息.txt", "w");
+		if (fp == NULL)
+		{
+			printf("Failed to open the file!\n");
+			return;
+		}
+		for (j = 0; j < k; j++)
+			fwrite(&card[j], sizeof(struct bankcard), 1, fp);
+		fclose(fp);
+		printf("挂失成功！！\n");
+		system("pause");		
+		return;
+	}
+	if (ch == 'n')
+	{
+		printf("已经停止挂失！！\n");
+		system("pause");
+		return;
+	}
+	return;
+
+}
+
+void Unfreeze(int i)
+{
+	struct bankcard card[M];
+	FILE *fp;
+	int k = 0, j;
+	fp = fopen("D:/a/银行用户信息.txt", "r");
+	if (fp == NULL)
+	{
+		printf("Failed to open the file!\n");
+		return;
+	}
+	fread(&card[k], sizeof(struct bankcard), 1, fp);
+	while (!feof(fp))
+	{
+		k++;
+		fread(&card[k], sizeof(struct bankcard), 1, fp);
+	}
+	fclose(fp);
+	if (card[i].flag1 == 0)
+	{
+		printf("此卡没有挂失！！\n");
+		system("pause");
+		return;
+	}
+	card[i].flag1 = 0;
+	fp = fopen("D:/a/银行用户信息.txt", "w");
+	if (fp == NULL)
+	{
+		printf("Failed to open the file!\n");
+		return;
+	}
+	for (j = 0; j < k; j++)
+		fwrite(&card[j], sizeof(struct bankcard), 1, fp);
+	fclose(fp);
+	printf("!!!!!!!!!!!!!!!!!!!!!!!\n");
+	printf("!!!!!!!!!!!!!!!!!!!!!!!\n");
+	printf("解冻成功！！\n");
+	printf("!!!!!!!!!!!!!!!!!!!!!!!\n");
+	printf("!!!!!!!!!!!!!!!!!!!!!!!\n");
+	system("pause");
+	return;
+
+}
+
+void Delete(int i)
+
+{
+	char ch;
+	struct bankcard card[M];
+	FILE *fp;
+	int k = 0, j;
+	      	if (card[i].flag1 == 1)
+		{
+			printf("此卡已经被挂失！！系统不允许进行操作！\n");
+			system("pause");
+			return;
+		}
+	printf("你确定销户？确定请输入y,退出请输入n。\n");
+	scanf("%c", &ch);
+	scanf("%c", &ch);
+	if (ch == 'y')
+	{
+		fp = fopen("D:/a/银行用户信息.txt", "r");
+		if (fp == NULL)
+		{
+			printf("Failed to open the file!\n");
+			return;
+		}
+		fread(&card[k], sizeof(struct bankcard), 1, fp);
+		while (!feof(fp))
+		{
+
+			k++;
+			fread(&card[k], sizeof(struct bankcard), 1, fp);
+		}
+		fclose(fp);
+		card[i].flag1 = 2;
+		fp = fopen("D:/a/银行用户信息.txt", "w");
+		if (fp == NULL)
+		{
+			printf("Failed to open the file!\n");
+			return;
+		}
+		for (j = 0; j < k; j++)
+		{
+			if (j == i)
+				j++;
+			fwrite(&card[j], sizeof(struct bankcard), 1, fp);
+		}
+
+		fclose(fp);
+		printf("\n\n你已经完成销户！！\n");
+		exit(0);
+	}
+	if (ch == 'n')
+	{
+		printf("已经停止销户！！\n");
+		system("pause");
+	}
+	return;
+
+}
+
+void Remember(int i)
+{
+	//system("cls");
+	FILE *fp;
+	int k = 0;
+	struct bankcard card[M];
+	fp = fopen("D:/a/银行用户信息.txt", "r");
+	if (fp == NULL)
+	{
+		printf("Failed to open the file!\n");
+		return;
+	}
+	fread(&card[k], sizeof(struct bankcard), 1, fp);
+	while (!feof(fp))
+	{
+		k++;
+		fread(&card[k], sizeof(struct bankcard), 1, fp);
+	}
+	fclose(fp);
+	      	if (card[i].flag1 == 1)
+		{
+			printf("此卡已经被挂失！！系统不允许进行操作！\n");
+			system("pause");
+			return;
+		}
+	for (int z = 0; z < card[i].t; z++)
+	{
+		printf("%s%s%.2lf元人民币\n", card[i].jiaoyi[z].time, card[i].jiaoyi[z].s, card[i].jiaoyi[z]._money);
+	}
+	system("pause");
+
+}
+
+void Changemima(int i)                  //修改密码！
+{
+	struct bankcard card[M];
+	FILE *fp;
+	int k = 0, j;
+	int z = 0;
+	char ch;
+	char oldmima[13] = "\0", newmima[13] = "\0";
+
+	fp = fopen("D:/a/银行用户信息.txt", "r");
+	if (fp == NULL)
+	{
+		printf("Failed to open the file!\n");
+		return;
+	}
+	fread(&card[k], sizeof(struct bankcard), 1, fp);
+	while (!feof(fp))
+	{
+
+		k++;
+		fread(&card[k], sizeof(struct bankcard), 1, fp);
+	}
+	fclose(fp);
+	      	if (card[i].flag1 == 1)
+		{
+			printf("此卡已经被挂失！！系统不允许进行操作！\n");
+			system("pause");
+			return;
+		}
+	printf("请您输入旧密码：\n");
+	//scanf("%s", oldmima);
+	while ((ch = getch()) != '\r')
+	{
+
+		if (ch != '\b')
+		{
+			oldmima[z] = ch;
+			z++;
+			printf("*");
+		}
+		else if (z>0 && ch == '\b')
+		{
+			--z;
+			putchar('\b');
+			putchar(' ');
+			putchar('\b');
+		}
+	}
+	z = 0;
+	if ((strcmp(card[i].password, oldmima) == 0))
+	{
+		printf("\n请输入新密码：要求长度：(8-12)\n");
+		//scanf("%s", newmima);
+		while ((ch = getch()) != '\r')
+		{
+
+			if (ch != '\b')
+			{
+				newmima[z] = ch;
+				z++;
+				printf("*");
+			}
+			else if (z>0 && ch == '\b')
+			{
+				--z;
+				putchar('\b');
+				putchar(' ');
+				putchar('\b');
+			}
+		}
+		z = 0;
+		printf("\n请再次输入新密码：要求长度：(8-12)\n");
+		//scanf("%s",card[i].password);
+		while ((ch = getch()) != '\r')
+		{
+
+			if (ch != '\b')
+			{
+				card[i].password[z] = ch;
+				z++;
+				printf("*");
+			}
+			else if (z>0 && ch == '\b')
+			{
+				--z;
+				putchar('\b');
+				putchar(' ');
+				putchar('\b');
+			}
+		}
+		//printf("\n%s  %s\n",card[i].password ,newmima);
+		if (strcmp(card[i].password, newmima) == 0)
+		{
+			fp = fopen("D:/a/银行用户信息.txt", "w");
+			if (fp == NULL)
+			{
+				printf("Failed to open the file!\n");
+				return;
+			}
+			for (j = 0; j < k; j++)
+				fwrite(&card[j], sizeof(struct bankcard), 1, fp);
+			fclose(fp);
+			printf("\n\n密码修改成功！！\n\n\n");
+			system("pause");
+			return;
+		}
+		else
+		{
+			printf("\n\n两次密码输入不相同！！\n\n");
+			system("pause");
+			return;
+		}
+	}
+	else
+	{
+		printf("\n\n密码输入错误！\n\n");
+		return;
+	}
+}
+
+void Layout()               // 布局
+{
+	printf("\t\t\t┌───────────────────┐\n");
+	printf("\t\t\t│   登录成功！！！  welcome to bank!   │\n");
+	printf("\t\t\t├───────────────────┤\n");
+	printf("\t\t\t│               1.存款                 │\n");
+	printf("\t\t\t├───────────────────┤\n");
+	printf("\t\t\t│               2.取款                 │\n");
+	printf("\t\t\t├───────────────────┤\n");
+	printf("\t\t\t│               3.转账                 │\n");
+	printf("\t\t\t├───────────────────┤\n");
+	printf("\t\t\t│               4.余额                 │\n");
+	printf("\t\t\t├───────────────────┤\n");
+	printf("\t\t\t│               5.挂失                 │\n");
+	printf("\t\t\t├───────────────────┤\n");
+	printf("\t\t\t│               6.交易记录             │\n");
+	printf("\t\t\t├───────────────────┤\n");
+	printf("\t\t\t│               7.修改密码             │\n");
+	printf("\t\t\t├───────────────────┤\n");
+	printf("\t\t\t│               0.退出                 │\n");
+	printf("\t\t\t└───────────────────┘\n");
+
+}
+
+void Layout2()
+{
+	printf("\t\t\t┌───────────────────┐\n");
+	printf("\t\t\t│   尊敬的管理员，您已经登录成功！！   │\n");
+	printf("\t\t\t├───────────────────┤\n");
+	printf("\t\t\t│               1.客户挂失             │\n");
+	printf("\t\t\t├───────────────────┤\n");
+	printf("\t\t\t│               2.客户销户             │\n");
+	printf("\t\t\t├───────────────────┤\n");
+	printf("\t\t\t│               3.客户解冻             │\n");
+	printf("\t\t\t├───────────────────┤\n");
+	printf("\t\t\t│               4.客户信息             │\n");
+	printf("\t\t\t├───────────────────┤\n");
+	printf("\t\t\t│               0.退出                 │\n");
+	printf("\t\t\t└───────────────────┘\n");
+
+}
+
+void Menu2(int i)
+{
+	int n;
+	while (1)
+	{
+		system("cls");
+		Layout();
+		printf("请选择对应操作的序号：\n");
+		scanf("%d", &n);
+		switch (n)
+		{
+		case 1:  Saving(i);         break;
+		case 2:  Withdraw(i);       break;
+		case 3:  TransferMoney(i);  break;
+		case 4:  Remaining(i);      break;
+		case 5:  Loss(i);           break;
+		case 6:  Remember(i);       break;
+		case 7:  Changemima(i);     break;
+		case 0: exit(0);
+		}
+	}
+
+}
+
+void Menu3()
+{
+	int n, z;
+	char num[17];
+	while (1)
+	{
+		system("cls");
+		Layout2();
+		printf("请选择对应操作的序号：\n");
+		scanf("%d", &n);
+		switch (n)
+		{
+		case 1:
+		{
+				  printf("请输入要挂失的账号：\n");
+				  scanf("%s", num);
+				  z = Number(num);
+				  if (z == -1)
+				  {
+					  printf("NO FIND!!!");
+					  system("pause");
+					  Menu3();
+				  }
+				  Loss(z);
+		}break;
+		case 2: {
+					printf("请输入要销户的账号：\n");
+					scanf("%s", num);
+					z = Number(num);
+					if (z == -1)
+					{
+						printf("NO FIND!!!");
+						system("pause");
+						Menu3();
+					}
+					Delete(z);
+		}       break;
+		case 3:  {
+					 printf("请输入要解冻的账号：\n");
+					 scanf("%s", num);
+					 z = Number(num);
+					 if (z == -1)
+					 {
+						 printf("NO FIND!!!");
+						 system("pause");
+						 Menu3();
+					 }
+					 Unfreeze(z);
+		}  break;
+		case 4: Enter(); break;
+		case 0: exit(0);
+		}
+	}
+}
+
+void Register()             //   注册
+{
+	FILE *fp;
+	int i = 0, j = 0, q;
+	char newer[17], ch;
+	char repass[13] = "\0";
+	struct bankcard card[M];
+	system("cls");
+	Registerface();
+	gotoxy(40, 3);
+	scanf("%s", newer);
+	if (strcmp(newer, "0000123456780000") == 0)
+	{
+		printf("此用户已经被注册，您可直接登录！！\n");
+		system("pause");
+		system("cls");
+		Menu1();
+	}
+	getchar();
+	fp = fopen("d:/a/银行用户信息.txt", "a+");
+	if (fp == NULL)
+	{
+
+		printf("Failed to open the file!!!\n");
+		return;
+	}
+	fread(&card[i], sizeof(struct bankcard), 1, fp);
+	while (!feof(fp))
+	{
+		if (strcmp(card[i].name, newer) == 0)
+		{
+			gotoxy(10, 20);
+			system("cls");
+			printf("此用户已经被注册，您可直接登录！！\n");
+			Menu1();
+		}
+		fread(&card[i], sizeof(struct bankcard), 1, fp);
+	}
+	fclose(fp);
+	fp = fopen("d:/a/银行用户信息.txt", "ab");
+	if (fp == NULL)
+	{
+		printf("Failed to open the file!!\n");
+		return;
+	}
+	strcpy(card[i].name, newer);
+	for (q = 0; q < 13; q++)
+		card[i].password[q] = '\0';
+	gotoxy(40, 5);
+	//scanf("%s", card[i].password);
+	while ((ch = getch()) != '\r')
+	{
+
+		if (ch != '\b')
+		{
+			card[i].password[j] = ch;
+			j++;
+			printf("*");
+		}
+		else if (j>0 && ch == '\b')
+		{
+			--j;
+			putchar('\b');
+			putchar(' ');
+			putchar('\b');
+		}
+	}
+	gotoxy(40, 7);
+	//scanf("%s", repass);
+	j = 0;
+	while ((ch = getch()) != '\r')
+	{
+
+		if (ch != '\b')
+		{
+			repass[j] = ch;
+			j++;
+			printf("*");
+		}
+		else if (j>0 && ch == '\b')
+		{
+			--j;
+			putchar('\b');
+			putchar(' ');
+			putchar('\b');
+		}
+	}
+	if (strcmp(card[i].password, repass) == 0)
+	{
+		gotoxy(10, 20);
+		printf("注册成功！\n");
+		card[i].flag1 = 0;
+		card[i].balance = 0;
+		card[i].t = 0;
+		fwrite(&card[i], sizeof(struct bankcard), 1, fp);
+		system("pause");
+	}
+	else
+	{
+		gotoxy(30, 20);
+		puts(repass);
+		puts(card[i].password);
+		printf("注册失败，两次密码不相同！！！\n");
+		system("pause");
+	}
+
+}
+
+void Interface()    // 登录注册界面
+{
+	printf("\t\t\t┌───────────────────┐\n");
+	printf("\t\t\t│           welcome to bank!           │\n");
+	printf("\t\t\t├───────────────────┤\n");
+	printf("\t\t\t│            1.普通用户登录            │\n");
+	printf("\t\t\t├───────────────────┤\n");
+	printf("\t\t\t│            2.  注  册                │\n");
+	printf("\t\t\t├───────────────────┤\n");
+	printf("\t\t\t│            3.管理员登录              │\n");
+	printf("\t\t\t├───────────────────┤\n");
+	printf("\t\t\t│            0.退出                    │\n");
+	printf("\t\t\t└───────────────────┘\n");
+
+
+}
+
+void gotoxy(int x, int y)     //定位到第y行的第x列
+{
+	int xx = 0x0b;
+	HANDLE hOutput;
+	COORD loc;
+	loc.X = x; loc.Y = y;
+	hOutput = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleCursorPosition(hOutput, loc);
+	return;
+}
+
+void Enterface()    //登录界面
+{
+	printf("\t\t\t┌────────────────────────┐\n");
+	printf("\t\t\t│             welcome to bank!                   │\n");
+	printf("\t\t\t├────────────────────────┤\n");
+	printf("\t\t\t│  用户名：                                      │\n");
+	printf("\t\t\t├────────────────────────┤\n");
+	printf("\t\t\t│  密 码 ：                (8---12)个字母数字构成│\n");
+	printf("\t\t\t├────────────────────────┤\n");
+	printf("\t\t\t│              回车登录                          │\n");
+	printf("\t\t\t└────────────────────────┘\n");
+}
+
+void Registerface()  //注册界面
+{
+	printf("\t\t\t┌─────────────────────────┐\n");
+	printf("\t\t\t│                    welcome to bank!              │\n");
+	printf("\t\t\t├─────────────────────────┤\n");
+	printf("\t\t\t│  用户名  ：                            (16位数字)│\n");
+	printf("\t\t\t├─────────────────────────┤\n");
+	printf("\t\t\t│  密 码   ：                (8---12)个字母数字构成│\n");
+	printf("\t\t\t├─────────────────────────┤\n");
+	printf("\t\t\t│ 确认密码 ：                                      │\n");
+	printf("\t\t\t├─────────────────────────┤\n");
+	printf("\t\t\t│                      回车注册                    │\n");
+	printf("\t\t\t└─────────────────────────┘\n");
+	return;
+}
+
+void Menu1()
+{
+	int n;
+	Interface();
+	printf("请选择对应操作的序号：");
+	scanf("%d", &n);
+	switch (n)
+	{
+	case 1: Enter();    break;
+	case 2: Register(); break;
+	case 3: Administrat();  break;
+	case 0: exit(0);
+	}
+}
