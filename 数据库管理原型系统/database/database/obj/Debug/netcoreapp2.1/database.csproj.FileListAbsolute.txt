@@ -1,0 +1,11 @@
+C:\Users\yaohao\Desktop\大学--\sql\数据库实现\database\database\obj\Debug\netcoreapp2.1\database.csprojAssemblyReference.cache
+C:\Users\yaohao\Desktop\大学--\sql\数据库实现\database\database\obj\Debug\netcoreapp2.1\database.csproj.CoreCompileInputs.cache
+C:\Users\yaohao\Desktop\大学--\sql\数据库实现\database\database\obj\Debug\netcoreapp2.1\database.AssemblyInfoInputs.cache
+C:\Users\yaohao\Desktop\大学--\sql\数据库实现\database\database\obj\Debug\netcoreapp2.1\database.AssemblyInfo.cs
+C:\Users\yaohao\Desktop\大学--\sql\数据库实现\database\database\bin\Debug\netcoreapp2.1\database.deps.json
+C:\Users\yaohao\Desktop\大学--\sql\数据库实现\database\database\bin\Debug\netcoreapp2.1\database.runtimeconfig.json
+C:\Users\yaohao\Desktop\大学--\sql\数据库实现\database\database\bin\Debug\netcoreapp2.1\database.runtimeconfig.dev.json
+C:\Users\yaohao\Desktop\大学--\sql\数据库实现\database\database\bin\Debug\netcoreapp2.1\database.dll
+C:\Users\yaohao\Desktop\大学--\sql\数据库实现\database\database\bin\Debug\netcoreapp2.1\database.pdb
+C:\Users\yaohao\Desktop\大学--\sql\数据库实现\database\database\obj\Debug\netcoreapp2.1\database.dll
+C:\Users\yaohao\Desktop\大学--\sql\数据库实现\database\database\obj\Debug\netcoreapp2.1\database.pdb
